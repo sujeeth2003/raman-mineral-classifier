@@ -38,3 +38,14 @@ Baseline correction adds 3-8 accuracy points to every model. Chance is about 1.4
 
 ![robustness](results/robustness.png)
 
+| Accuracy at... | PCA-LDA | PLS-DA | CNN | CNN + aug |
+|---|---|---|---|---|
+| drift 1.0 x peak height | 0.874 | 0.846 | 0.784 | 0.894 |
+| drift 2.0 | 0.864 | 0.823 | 0.625 | 0.872 |
+| shift 6 cm^-1 | 0.697 | 0.589 | 0.883 | 0.876 |
+| shift 10 cm^-1 | 0.422 | 0.266 | 0.861 | 0.844 |
+| noise 0.10 | 0.875 | 0.831 | 0.041 | 0.629 |
+| noise 0.20 | 0.833 | 0.771 | 0.026 | 0.065 |
+
+Full tables: `results/robustness_tables.md`, `results/clean_summary.csv`.
+
