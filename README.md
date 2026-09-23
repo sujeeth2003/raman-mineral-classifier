@@ -23,3 +23,18 @@ more with the oriented/repeat-measurement data or a larger multi-laser set.
    Noise sigma and drift amplitude are relative to the peak height; shift is a random-sign
    global wavenumber offset. Models are trained on clean data only (except the aug CNN).
 
+## Results (held-out, 5-fold)
+| Model | Accuracy | Macro-F1 |
+|---|---|---|
+| PCA-LDA (baseline) | 0.885 +- 0.045 | 0.862 |
+| PLS-DA (baseline) | 0.844 +- 0.015 | 0.799 |
+| CNN (baseline) | 0.907 +- 0.025 | 0.894 |
+| CNN (baseline + aug) | **0.915 +- 0.007** | 0.901 |
+| PCA-LDA (no baseline) | 0.836 +- 0.032 | 0.825 |
+| PLS-DA (no baseline) | 0.816 +- 0.014 | 0.773 |
+| CNN (no baseline) | 0.829 +- 0.030 | 0.800 |
+
+Baseline correction adds 3-8 accuracy points to every model. Chance is about 1.4 %.
+
+![robustness](results/robustness.png)
+
