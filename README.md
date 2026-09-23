@@ -12,3 +12,14 @@ Grouping caveat: RRUFF mostly measures each specimen once per laser, so only 2 s
 The grouped split is enforced (asserted in code) but it prevents little leakage here. It would matter
 more with the oriented/repeat-measurement data or a larger multi-laser set.
 
+## Pipeline
+1. Savitzky-Golay smoothing, then **AsLS baseline correction** (lam=1e5, p=0.01), clip at 0, scale to max 1.
+2. Models: **PCA(40)+shrinkage LDA**, **PLS-DA** (latent variables chosen by inner CV), **1D CNN**
+   (3 conv blocks, 60 epochs, AdamW + one-cycle, label smoothing).
+3. 5-fold `StratifiedGroupKFold` (groups = RRUFF specimen ID). Mean +- sd over folds.
+4. Ablation: same models with no baseline correction. CNN variant trained with augmented copies
+   (noise <= 5 %, drift <= 1.0, shift <= 4 cm^-1; 8 copies per spectrum).
+5. Robustness: perturb the *raw* held-out spectra, then rerun the full preprocessing + model.
+   Noise sigma and drift amplitude are relative to the peak height; shift is a random-sign
+   global wavenumber offset. Models are trained on clean data only (except the aug CNN).
+
