@@ -58,3 +58,9 @@ Full tables: `results/robustness_tables.md`, `results/clean_summary.csv`.
   My untested guess is that clipping at zero and min-max scaling bias noisy spectra in a way the network never saw; I did not isolate the cause.
 - So no model wins everywhere. The CNN is best on clean data, drift and shift; the linear models are best under heavy noise.
 
+## Limitations
+- 70 classes with 5-12 specimens each; accuracy has about +-3 points of fold-to-fold spread.
+- Perturbations are synthetic. Real spectrometer drift was not measured.
+- Single laser (532 nm). Hyperparameters were fixed, not tuned per model; the CNN was not tuned.
+- Test-time folds contain classes seen in training only (closed-set), no unknown-mineral rejection.
+
