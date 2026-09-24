@@ -64,3 +64,11 @@ Full tables: `results/robustness_tables.md`, `results/clean_summary.csv`.
 - Single laser (532 nm). Hyperparameters were fixed, not tuned per model; the CNN was not tuned.
 - Test-time folds contain classes seen in training only (closed-set), no unknown-mineral rejection.
 
+## Reproduce
+```bash
+pip install -r requirements.txt
+python src/download_data.py      # ~420 MB
+python src/prepare_data.py
+python src/run_experiments.py    # ~16 min on CPU
+python src/make_figures.py
+```
