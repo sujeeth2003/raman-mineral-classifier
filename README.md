@@ -49,3 +49,12 @@ Baseline correction adds 3-8 accuracy points to every model. Chance is about 1.4
 
 Full tables: `results/robustness_tables.md`, `results/clean_summary.csv`.
 
+## What the robustness test shows
+- **Baseline drift:** without baseline correction accuracy collapses (PCA-LDA 0.32 at drift 2.0 vs 0.86 with it). Augmentation makes the CNN as drift-proof as the linear models.
+- **Wavenumber shift:** convolutional features are much more tolerant than PCA/PLS, which compare fixed
+  channels (at 10 cm^-1: CNN 0.86 vs PLS-DA 0.27).
+- **Noise: the CNN is the weak point.** It falls apart at noise 0.10 and, even with augmentation, at 0.20
+  (augmentation only covered up to 0.05, so 0.10 is partial extrapolation). PCA-LDA and PLS-DA degrade gently.
+  My untested guess is that clipping at zero and min-max scaling bias noisy spectra in a way the network never saw; I did not isolate the cause.
+- So no model wins everywhere. The CNN is best on clean data, drift and shift; the linear models are best under heavy noise.
+
