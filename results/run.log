@@ -1,0 +1,32 @@
+538 spectra | 70 minerals | 536 specimens
+fold 0 | PCA-LDA (baseline)       clean acc 0.925 |     5s
+fold 0 | PCA-LDA (no baseline)    clean acc 0.804 |     7s
+fold 0 | PLS-DA (baseline)        clean acc 0.860 |    16s
+fold 0 | PLS-DA (no baseline)     clean acc 0.794 |    23s
+fold 0 | CNN (baseline)           clean acc 0.897 |    50s
+fold 0 | CNN (no baseline)        clean acc 0.794 |    70s
+fold 0 | CNN (baseline + aug)     clean acc 0.925 |   228s
+fold 1 | PCA-LDA (baseline)       clean acc 0.917 |   231s
+fold 1 | PCA-LDA (no baseline)    clean acc 0.889 |   232s
+fold 1 | PLS-DA (baseline)        clean acc 0.852 |   238s
+fold 1 | PLS-DA (no baseline)     clean acc 0.815 |   243s
+fold 1 | CNN (baseline)           clean acc 0.926 |   262s
+fold 1 | CNN (no baseline)        clean acc 0.843 |   275s
+fold 1 | CNN (baseline + aug)     clean acc 0.907 |   409s
+fold 2 | PCA-LDA (baseline)       clean acc 0.822 |   412s
+fold 2 | PCA-LDA (no baseline)    clean acc 0.822 |   412s
+fold 2 | PLS-DA (baseline)        clean acc 0.832 |   418s
+fold 2 | PLS-DA (no baseline)     clean acc 0.832 |   422s
+fold 2 | CNN (baseline)           clean acc 0.935 |   437s
+fold 2 | CNN (no baseline)        clean acc 0.869 |   451s
+fold 2 | CNN (baseline + aug)     clean acc 0.916 |   575s
+fold 3 | PCA-LDA (baseline)       clean acc 0.852 |   578s
+fold 3 | PCA-LDA (no baseline)    clean acc 0.843 |   579s
+fold 3 | PLS-DA (baseline)        clean acc 0.824 |   585s
+fold 3 | PLS-DA (no baseline)     clean acc 0.815 |   589s
+fold 3 | CNN (baseline)           clean acc 0.907 |   604s
+fold 3 | CNN (no baseline)        clean acc 0.833 |   618s
+fold 3 | CNN (baseline + aug)     clean acc 0.917 |   759s
+fold 4 | PCA-LDA (baseline)       clean acc 0.907 |   763s
+fold 4 | PCA-LDA (no baseline)    clean acc 0.824 |   764s
+fold 4 | PLS-DA (baseline)        clean acc 0.852 |   772s
