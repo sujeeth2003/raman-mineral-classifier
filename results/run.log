@@ -30,3 +30,8 @@ fold 3 | CNN (baseline + aug)     clean acc 0.917 |   759s
 fold 4 | PCA-LDA (baseline)       clean acc 0.907 |   763s
 fold 4 | PCA-LDA (no baseline)    clean acc 0.824 |   764s
 fold 4 | PLS-DA (baseline)        clean acc 0.852 |   772s
+fold 4 | PLS-DA (no baseline)     clean acc 0.824 |   776s
+fold 4 | CNN (baseline)           clean acc 0.870 |   796s
+fold 4 | CNN (no baseline)        clean acc 0.806 |   813s
+fold 4 | CNN (baseline + aug)     clean acc 0.907 |   946s
+saved results.json
