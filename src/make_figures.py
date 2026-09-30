@@ -105,3 +105,10 @@ def main():
         for kind, t in tables.items():
             f.write(f"### {kind}\n\n```\n{t.to_string()}\n```\n\n")
             print(kind, "\n", t.to_string(), "\n")
+
+    fig_baseline()
+    fig_pca()
+
+
+if __name__ == "__main__":
+    main()
