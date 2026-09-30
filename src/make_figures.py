@@ -73,3 +73,35 @@ def fig_pca():
     fig.savefig(RES / "pca_scores.png", dpi=160)
     plt.close(fig)
 
+
+def main():
+    r = json.load(open(RES / "results.json"))
+    clean = pd.DataFrame(r["clean"])
+    robust = pd.DataFrame(r["robust"])
+
+    summ = clean.groupby("model", sort=False).agg(
+        acc_mean=("acc", "mean"), acc_sd=("acc", "std"), f1_mean=("f1", "mean"), f1_sd=("f1", "std")).round(3)
+    summ.to_csv(RES / "clean_summary.csv")
+    print(summ.to_string(), "\n")
+
+    fig, axes = plt.subplots(1, 3, figsize=(14, 4), sharey=True)
+    tables = {}
+    for ax, kind in zip(axes, ["noise", "drift", "shift"]):
+        sub = robust[robust.kind == kind]
+        g = sub.groupby(["model", "level"], sort=False).acc.agg(["mean", "std"]).reset_index()
+        tables[kind] = g.pivot(index="model", columns="level", values="mean").round(3)
+        for name, gg in g.groupby("model", sort=False):
+            c, ls, mk = style(name)
+            ax.errorbar(gg.level, gg["mean"], yerr=gg["std"], color=c, ls=ls, marker=mk, ms=4,
+                        lw=2.2 if "aug" in name else 1.4, capsize=2, label=name)
+        ax.set_xlabel(XLABEL[kind])
+        ax.grid(alpha=0.25)
+    axes[0].set_ylabel("held-out accuracy (5-fold, mean ± sd)")
+    axes[2].legend(frameon=False, fontsize=7.5, loc="upper right")
+    fig.tight_layout()
+    fig.savefig(RES / "robustness.png", dpi=160)
+    plt.close(fig)
+    with open(RES / "robustness_tables.md", "w") as f:
+        for kind, t in tables.items():
+            f.write(f"### {kind}\n\n```\n{t.to_string()}\n```\n\n")
+            print(kind, "\n", t.to_string(), "\n")
