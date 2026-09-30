@@ -49,3 +49,27 @@ def fig_baseline():
     fig.savefig(RES / "baseline_correction.png", dpi=160)
     plt.close(fig)
 
+
+def fig_pca():
+    d = np.load(ROOT / "data" / "processed" / "dataset.npz")
+    X, y = d["X"].astype(np.float64), d["y"]
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.2))
+    top = pd.Series(y).value_counts().index[:8]
+    cmap = plt.get_cmap("tab10")
+    for ax, bl, title in zip(axes, [False, True], ["no baseline correction", "AsLS baseline correction"]):
+        P = preprocess(X, baseline=bl)
+        pca = PCA(2, random_state=0).fit(P)
+        S = pca.transform(P)
+        ax.scatter(S[:, 0], S[:, 1], s=6, color="#ddd")
+        for k, m in enumerate(top):
+            sel = y == m
+            ax.scatter(S[sel, 0], S[sel, 1], s=18, color=cmap(k), label=m)
+        ev = pca.explained_variance_ratio_
+        ax.set_title(title)
+        ax.set_xlabel(f"PC1 ({ev[0]:.0%})")
+        ax.set_ylabel(f"PC2 ({ev[1]:.0%})")
+    axes[1].legend(frameon=False, fontsize=7, loc="best")
+    fig.tight_layout()
+    fig.savefig(RES / "pca_scores.png", dpi=160)
+    plt.close(fig)
+
