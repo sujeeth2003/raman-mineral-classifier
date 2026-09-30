@@ -22,3 +22,10 @@ XLABEL = {"noise": "Gaussian noise σ (fraction of peak height)",
           "shift": "Wavenumber shift (cm⁻¹)"}
 
 
+def style(name):
+    fam = name.split(" (")[0]
+    ls = "--" if "no baseline" in name else "-"
+    marker = "s" if "aug" in name else "o"
+    return COLORS[fam], ls, marker
+
+
