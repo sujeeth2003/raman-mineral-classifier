@@ -8,3 +8,16 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.model_selection import StratifiedKFold
 
 
+class PCALDA:
+    def __init__(self, n_components=40):
+        self.pca = PCA(n_components=n_components, random_state=0)
+        self.lda = LinearDiscriminantAnalysis(solver="lsqr", shrinkage="auto")
+
+    def fit(self, X, y):
+        self.lda.fit(self.pca.fit_transform(X), y)
+        return self
+
+    def predict(self, X):
+        return self.lda.predict(self.pca.transform(X))
+
+
