@@ -21,3 +21,17 @@ class PCALDA:
         return self.lda.predict(self.pca.transform(X))
 
 
+class PLSDA:
+    """PLS regression onto one-hot class indicators; prediction is the arg-max column.
+
+    The number of latent variables is chosen by inner cross-validation on the training data.
+    """
+
+    def __init__(self, n_classes, grid=(10, 20, 30, 40, 55)):
+        self.n_classes, self.grid = n_classes, grid
+
+    def _onehot(self, y):
+        Y = np.zeros((len(y), self.n_classes))
+        Y[np.arange(len(y)), y] = 1.0
+        return Y
+
