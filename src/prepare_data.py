@@ -24,3 +24,19 @@ MIN_SAMPLES = 5          # distinct specimens per mineral
 MIN_SPECTRA_COVER = 0.99  # spectrum must cover this fraction of the grid
 
 
+def read_spectrum(path):
+    xs, ys = [], []
+    for line in path.read_text(errors="ignore").splitlines():
+        if line.startswith("##") or not line.strip():
+            continue
+        parts = re.split(r"[,\s]+", line.strip())
+        try:
+            xv, yv = float(parts[0]), float(parts[1])
+        except (ValueError, IndexError):
+            continue
+        xs.append(xv)
+        ys.append(yv)
+    x, y = np.asarray(xs), np.asarray(ys)
+    order = np.argsort(x)
+    return x[order], y[order]
+
