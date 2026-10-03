@@ -29,3 +29,10 @@ def add_drift(X, scale, amp, rng, order=4):
     return out
 
 
+def shift_axis(X, grid, shift_cm, rng):
+    """Simulate wavenumber calibration drift: shift every spectrum by +/- shift_cm."""
+    out = np.empty(X.shape, dtype=np.float64)
+    signs = rng.choice([-1.0, 1.0], size=len(X))
+    for i, y in enumerate(X):
+        out[i] = np.interp(grid, grid + signs[i] * shift_cm, y)
+    return out
