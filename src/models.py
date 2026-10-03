@@ -98,3 +98,8 @@ class CNN1D:
                 sched.step()
         return self
 
+    @torch.no_grad()
+    def predict(self, X):
+        self.net.eval()
+        Xt = torch.tensor(X, dtype=torch.float32).unsqueeze(1)
+        return torch.cat([self.net(Xt[i:i + 256]).argmax(1) for i in range(0, len(Xt), 256)]).numpy()
