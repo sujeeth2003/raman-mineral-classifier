@@ -40,3 +40,23 @@ def read_spectrum(path):
     order = np.argsort(x)
     return x[order], y[order]
 
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for p in sorted(RAW.glob("*Raman_Data_RAW*")):
+        name, rid, _, laser = p.name.split("__")[:4]
+        if laser != LASER:
+            continue
+        x, y = read_spectrum(p)
+        if len(x) < 50:
+            continue
+        cover = ((GRID >= x.min()) & (GRID <= x.max())).mean()
+        if cover < MIN_SPECTRA_COVER:
+            continue
+        yi = np.interp(GRID, x, y)
+        if not np.isfinite(yi).all() or np.ptp(yi) == 0:
+            continue
+        rows.append((name, rid, yi))
+    print(f"spectra parsed at {LASER} nm with full coverage: {len(rows)}")
+
