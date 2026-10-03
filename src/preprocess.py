@@ -18,3 +18,22 @@ def _second_diff_penalty_banded(n):
     return d, d1, d2
 
 
+def asls_baseline(y, lam=1e5, p=0.01, n_iter=10):
+    """Asymmetric least squares baseline (Eilers & Boelens, 2005).
+
+    Points above the current fit get weight p, points below get 1 - p, so the
+    fit hugs the bottom of the spectrum and ignores Raman peaks.
+    """
+    n = len(y)
+    d, d1, d2 = _second_diff_penalty_banded(n)
+    w = np.ones(n)
+    z = y
+    for _ in range(n_iter):
+        ab = np.zeros((3, n))
+        ab[0, 2:] = lam * d2[2:]
+        ab[1, 1:] = lam * d1[1:]
+        ab[2, :] = lam * d + w
+        z = solveh_banded(ab, w * y)
+        w = np.where(y > z, p, 1.0 - p)
+    return z
+
