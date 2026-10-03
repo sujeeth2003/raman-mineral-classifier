@@ -60,3 +60,20 @@ def main():
         rows.append((name, rid, yi))
     print(f"spectra parsed at {LASER} nm with full coverage: {len(rows)}")
 
+    # samples per mineral
+    by_mineral = {}
+    for name, rid, _ in rows:
+        by_mineral.setdefault(name, set()).add(rid)
+    keep = {m for m, s in by_mineral.items() if len(s) >= MIN_SAMPLES}
+    rows = [r for r in rows if r[0] in keep]
+    print(f"minerals with >= {MIN_SAMPLES} specimens: {len(keep)}; spectra kept: {len(rows)}")
+
+    X = np.stack([r[2] for r in rows]).astype(np.float32)
+    y = np.array([r[0] for r in rows])
+    groups = np.array([r[1] for r in rows])
+    np.savez_compressed(OUT / "dataset.npz", X=X, y=y, groups=groups, grid=GRID)
+    print("specimens:", len(set(groups)), "| shape:", X.shape)
+
+
+if __name__ == "__main__":
+    main()
