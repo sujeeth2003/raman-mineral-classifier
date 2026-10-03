@@ -67,3 +67,34 @@ class _Net(nn.Module):
         self.features = nn.Sequential(block(1, 16, 9), block(16, 32, 7), block(32, 64, 5), nn.AdaptiveAvgPool1d(8))
         self.head = nn.Sequential(nn.Flatten(), nn.Dropout(0.3), nn.Linear(64 * 8, n_classes))
 
+    def forward(self, x):
+        return self.head(self.features(x))
+
+
+class CNN1D:
+    def __init__(self, n_classes, epochs=60, lr=2e-3, batch=64, seed=0):
+        self.n_classes, self.epochs, self.lr, self.batch, self.seed = n_classes, epochs, lr, batch, seed
+
+    def fit(self, X, y):
+        torch.manual_seed(self.seed)
+        g = torch.Generator().manual_seed(self.seed)
+        self.net = _Net(self.n_classes)
+        Xt = torch.tensor(X, dtype=torch.float32).unsqueeze(1)
+        yt = torch.tensor(y, dtype=torch.long)
+        opt = torch.optim.AdamW(self.net.parameters(), lr=self.lr, weight_decay=1e-3)
+        steps = self.epochs * int(np.ceil(len(X) / self.batch))
+        sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=self.lr, total_steps=steps)
+        loss_fn = nn.CrossEntropyLoss(label_smoothing=0.05)
+        self.net.train()
+        for _ in range(self.epochs):
+            perm = torch.randperm(len(Xt), generator=g)
+            for i in range(0, len(perm), self.batch):
+                idx = perm[i:i + self.batch]
+                if len(idx) < 2:
+                    continue
+                opt.zero_grad()
+                loss_fn(self.net(Xt[idx]), yt[idx]).backward()
+                opt.step()
+                sched.step()
+        return self
+
