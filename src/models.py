@@ -35,3 +35,21 @@ class PLSDA:
         Y[np.arange(len(y)), y] = 1.0
         return Y
 
+    def fit(self, X, y):
+        Y = self._onehot(y)
+        counts = np.bincount(y, minlength=self.n_classes)
+        k = int(min(3, counts[counts > 0].min()))
+        best, best_acc = self.grid[0], -1.0
+        if k >= 2:
+            skf = StratifiedKFold(k, shuffle=True, random_state=0)
+            for nc in self.grid:
+                accs = []
+                for tr, va in skf.split(X, y):
+                    m = PLSRegression(n_components=nc, scale=False).fit(X[tr], Y[tr])
+                    accs.append((m.predict(X[va]).argmax(1) == y[va]).mean())
+                if np.mean(accs) > best_acc:
+                    best, best_acc = nc, float(np.mean(accs))
+        self.n_components = best
+        self.model = PLSRegression(n_components=best, scale=False).fit(X, Y)
+        return self
+
