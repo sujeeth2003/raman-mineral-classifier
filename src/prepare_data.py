@@ -14,3 +14,13 @@ from pathlib import Path
 import re
 import numpy as np
 
+ROOT = Path(__file__).resolve().parents[1]
+RAW = ROOT / "data" / "raw" / "unz"
+OUT = ROOT / "data" / "processed"
+
+LASER = "532"
+GRID = np.arange(180.0, 1280.0, 2.0)  # cm^-1, 550 points
+MIN_SAMPLES = 5          # distinct specimens per mineral
+MIN_SPECTRA_COVER = 0.99  # spectrum must cover this fraction of the grid
+
+
