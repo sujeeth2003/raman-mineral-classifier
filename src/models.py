@@ -53,3 +53,17 @@ class PLSDA:
         self.model = PLSRegression(n_components=best, scale=False).fit(X, Y)
         return self
 
+    def predict(self, X):
+        return self.model.predict(X).argmax(1)
+
+
+class _Net(nn.Module):
+    def __init__(self, n_classes):
+        super().__init__()
+
+        def block(i, o, k):
+            return nn.Sequential(nn.Conv1d(i, o, k, padding=k // 2), nn.BatchNorm1d(o), nn.ReLU(), nn.MaxPool1d(2))
+
+        self.features = nn.Sequential(block(1, 16, 9), block(16, 32, 7), block(32, 64, 5), nn.AdaptiveAvgPool1d(8))
+        self.head = nn.Sequential(nn.Flatten(), nn.Dropout(0.3), nn.Linear(64 * 8, n_classes))
+
