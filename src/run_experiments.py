@@ -56,3 +56,14 @@ def make_model(family, n_classes):
     return CNN1D(n_classes, seed=SEED)
 
 
+def augment(Xraw, grid, scale, rng, n_copies):
+    """Random combination of noise, drift and axis shift on raw spectra."""
+    out = []
+    for _ in range(n_copies):
+        X = perturb.add_noise(Xraw, scale, rng.uniform(0, AUG_RANGE["noise"]), rng)
+        X = perturb.add_drift(X, scale, rng.uniform(0, AUG_RANGE["drift"]), rng)
+        X = perturb.shift_axis(X, grid, rng.uniform(0, AUG_RANGE["shift"]), rng)
+        out.append(X)
+    return np.concatenate(out)
+
+
