@@ -27,3 +27,23 @@ RES = ROOT / "results"
 SEED = 0
 N_AUG = 8  # augmented copies per training spectrum for the "CNN + aug" variant
 
+LEVELS = {
+    "noise": [0.0, 0.02, 0.05, 0.1, 0.2, 0.4],     # sigma / peak height
+    "drift": [0.0, 0.25, 0.5, 1.0, 2.0, 4.0],      # baseline peak-to-peak / peak height
+    "shift": [0.0, 1.0, 2.0, 4.0, 6.0, 10.0],      # cm^-1 (random sign per spectrum)
+}
+# the augmented CNN sees noise <= 0.05, drift <= 1.0, |shift| <= 4 cm^-1 in training;
+# the larger levels above are deliberately outside that range.
+AUG_RANGE = {"noise": 0.05, "drift": 1.0, "shift": 4.0}
+
+# name -> (model family, baseline correction on?, augmented training?)
+VARIANTS = {
+    "PCA-LDA (baseline)":     ("pca", True, False),
+    "PCA-LDA (no baseline)":  ("pca", False, False),
+    "PLS-DA (baseline)":      ("pls", True, False),
+    "PLS-DA (no baseline)":   ("pls", False, False),
+    "CNN (baseline)":         ("cnn", True, False),
+    "CNN (no baseline)":      ("cnn", False, False),
+    "CNN (baseline + aug)":   ("cnn", True, True),
+}
+
