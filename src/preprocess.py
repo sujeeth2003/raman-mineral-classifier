@@ -45,3 +45,14 @@ def normalise(s):
     return s / m if m > 0 else s
 
 
+def preprocess(X, baseline=True, smooth=True, lam=1e5, p=0.01):
+    """Return an (n, m) float32 array of baseline-corrected, smoothed, max-normalised spectra."""
+    out = np.empty(X.shape, dtype=np.float32)
+    for i, y in enumerate(X.astype(np.float64)):
+        if smooth:
+            y = savgol_filter(y, window_length=9, polyorder=3)
+        if baseline:
+            y = y - asls_baseline(y, lam=lam, p=p)
+            y = np.clip(y, 0, None)
+        out[i] = normalise(y)
+    return out
