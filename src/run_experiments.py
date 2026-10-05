@@ -47,3 +47,12 @@ VARIANTS = {
     "CNN (baseline + aug)":   ("cnn", True, True),
 }
 
+
+def make_model(family, n_classes):
+    if family == "pca":
+        return PCALDA()
+    if family == "pls":
+        return PLSDA(n_classes)
+    return CNN1D(n_classes, seed=SEED)
+
+
