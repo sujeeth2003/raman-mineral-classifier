@@ -67,3 +67,18 @@ def augment(Xraw, grid, scale, rng, n_copies):
     return np.concatenate(out)
 
 
+def score(pred, y):
+    return float((pred == y).mean()), float(f1_score(y, pred, average="macro", zero_division=0))
+
+
+def main(n_folds=5):
+    d = np.load(ROOT / "data" / "processed" / "dataset.npz")
+    Xraw, names, groups, grid = d["X"].astype(np.float64), d["y"], d["groups"], d["grid"]
+    le = LabelEncoder()
+    y = le.fit_transform(names)
+    n_classes = len(le.classes_)
+    print(f"{len(y)} spectra | {n_classes} minerals | {len(set(groups))} specimens", flush=True)
+
+    scale_all = perturb.signal_scale(Xraw)
+    cv = StratifiedGroupKFold(n_splits=n_folds, shuffle=True, random_state=SEED)
+
