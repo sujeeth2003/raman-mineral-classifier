@@ -102,3 +102,24 @@ def main(n_folds=5):
                     Xp = perturb.shift_axis(Xraw[te], grid, lv, rng)
                 tests[(kind, lv)] = Xp
 
+        Xaug_raw = augment(Xraw[tr], grid, scale_all[tr], rng, N_AUG)
+        yaug = np.tile(y[tr], N_AUG)
+
+        for name, (family, use_bl, use_aug) in VARIANTS.items():
+            Xtr = preprocess(Xraw[tr], baseline=use_bl)
+            ytr = y[tr]
+            if use_aug:
+                Xtr = np.concatenate([Xtr, preprocess(Xaug_raw, baseline=use_bl)])
+                ytr = np.concatenate([ytr, yaug])
+            model = make_model(family, n_classes).fit(Xtr, ytr)
+            for (kind, lv), Xt in tests.items():
+                acc, f1 = score(model.predict(preprocess(Xt, baseline=use_bl)), y[te])
+                if kind == "clean":
+                    clean.append(dict(fold=fold, model=name, acc=acc, f1=f1))
+                    # the clean point is also the zero level of every robustness curve
+                    for k in LEVELS:
+                        robust.append(dict(fold=fold, model=name, kind=k, level=0.0, acc=acc, f1=f1))
+                else:
+                    robust.append(dict(fold=fold, model=name, kind=kind, level=lv, acc=acc, f1=f1))
+            print(f"fold {fold} | {name:24s} clean acc {clean[-1]['acc']:.3f} | {time.time() - t0:5.0f}s", flush=True)
+
