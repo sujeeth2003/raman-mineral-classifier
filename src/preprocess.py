@@ -37,3 +37,11 @@ def asls_baseline(y, lam=1e5, p=0.01, n_iter=10):
         w = np.where(y > z, p, 1.0 - p)
     return z
 
+
+def normalise(s):
+    """Shift to zero minimum, scale to unit maximum."""
+    s = s - s.min()
+    m = s.max()
+    return s / m if m > 0 else s
+
+
