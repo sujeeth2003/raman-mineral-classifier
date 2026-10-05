@@ -13,3 +13,17 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
+from sklearn.metrics import f1_score
+from sklearn.model_selection import StratifiedGroupKFold
+from sklearn.preprocessing import LabelEncoder
+
+import perturb
+from models import CNN1D, PCALDA, PLSDA
+from preprocess import preprocess
+
+ROOT = Path(__file__).resolve().parents[1]
+RES = ROOT / "results"
+SEED = 0
+N_AUG = 8  # augmented copies per training spectrum for the "CNN + aug" variant
+
