@@ -82,3 +82,23 @@ def main(n_folds=5):
     scale_all = perturb.signal_scale(Xraw)
     cv = StratifiedGroupKFold(n_splits=n_folds, shuffle=True, random_state=SEED)
 
+    clean, robust = [], []
+    t0 = time.time()
+    for fold, (tr, te) in enumerate(cv.split(Xraw, y, groups)):
+        assert not set(groups[tr]) & set(groups[te]), "specimen leaked across split"
+        rng = np.random.default_rng(SEED + fold)
+
+        # held-out spectra at every perturbation level (raw domain), built once per fold
+        tests = {("clean", 0.0): Xraw[te]}
+        for kind, levels in LEVELS.items():
+            for lv in levels:
+                if lv == 0:
+                    continue
+                if kind == "noise":
+                    Xp = perturb.add_noise(Xraw[te], scale_all[te], lv, rng)
+                elif kind == "drift":
+                    Xp = perturb.add_drift(Xraw[te], scale_all[te], lv, rng)
+                else:
+                    Xp = perturb.shift_axis(Xraw[te], grid, lv, rng)
+                tests[(kind, lv)] = Xp
+
