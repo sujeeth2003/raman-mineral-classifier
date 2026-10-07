@@ -123,3 +123,12 @@ def main(n_folds=5):
                     robust.append(dict(fold=fold, model=name, kind=kind, level=lv, acc=acc, f1=f1))
             print(f"fold {fold} | {name:24s} clean acc {clean[-1]['acc']:.3f} | {time.time() - t0:5.0f}s", flush=True)
 
+    RES.mkdir(exist_ok=True)
+    json.dump(dict(clean=clean, robust=robust, classes=le.classes_.tolist(),
+                   n_spectra=int(len(y)), n_specimens=int(len(set(groups)))),
+              open(RES / "results.json", "w"), indent=1)
+    print("saved results.json")
+
+
+if __name__ == "__main__":
+    main(int(sys.argv[1]) if len(sys.argv) > 1 else 5)
